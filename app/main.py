@@ -30,9 +30,9 @@ def get_telemetry():
     global temperature, current, vibration, speed, cycles
 
     if (fault_active == True):
-        temperature += random.uniform(-0.5, 1.0)
-        current += random.uniform(-0.2, 0.4)
-        vibration += random.uniform(-0.05, 0.1)
+        temperature += random.uniform(-0.5, 1.5)
+        current += random.uniform(-0.2, 0.6)
+        vibration += random.uniform(-0.05, 0.15)
         speed += random.uniform(-1, 2)
 
     else:

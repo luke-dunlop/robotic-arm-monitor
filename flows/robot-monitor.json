@@ -181,7 +181,7 @@
         "z": "8623a164f47cd65a",
         "name": "current",
         "group": "b525fae8ec94672c",
-        "order": 3,
+        "order": 2,
         "value": "payload.current",
         "valueType": "msg",
         "width": 3,
@@ -203,20 +203,20 @@
                 "textType": "label"
             },
             {
-                "from": "7.5",
+                "from": "6.5",
                 "color": "#ffc800",
                 "text": "",
                 "textType": "label"
             },
             {
-                "from": "9",
+                "from": "8",
                 "color": "#ea5353",
                 "text": "",
                 "textType": "label"
             }
         ],
         "min": 0,
-        "max": "12",
+        "max": "10",
         "sizeThickness": 16,
         "sizeGap": 4,
         "sizeKeyThickness": 8,
@@ -235,7 +235,7 @@
         "z": "8623a164f47cd65a",
         "name": "vibration",
         "group": "b525fae8ec94672c",
-        "order": 2,
+        "order": 3,
         "value": "payload.vibration",
         "valueType": "msg",
         "width": 3,
@@ -374,7 +374,7 @@
         "type": "ui-text",
         "z": "8623a164f47cd65a",
         "group": "69ef077ee620710f",
-        "order": 2,
+        "order": 5,
         "width": 0,
         "height": 0,
         "name": "alarms",
@@ -398,7 +398,7 @@
         "type": "ui-text",
         "z": "8623a164f47cd65a",
         "group": "69ef077ee620710f",
-        "order": 3,
+        "order": 4,
         "width": 0,
         "height": 0,
         "name": "speed",
@@ -422,7 +422,7 @@
         "type": "ui-text",
         "z": "8623a164f47cd65a",
         "group": "69ef077ee620710f",
-        "order": 4,
+        "order": 3,
         "width": 0,
         "height": 0,
         "name": "cycles",
@@ -448,7 +448,7 @@
         "name": "fault switch",
         "label": "Introduce Fault",
         "group": "69ef077ee620710f",
-        "order": 5,
+        "order": 2,
         "width": 0,
         "height": 0,
         "passthru": false,
@@ -634,7 +634,7 @@
         }
     },
     {
-        "id": "4e6911246c877156",
+        "id": "06870bec8a7d3758",
         "type": "global-config",
         "env": [],
         "modules": {
