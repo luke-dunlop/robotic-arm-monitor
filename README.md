@@ -13,6 +13,8 @@ a live monitoring dashboard.
 
 - Python
 - FastAPI
+- PostgreSQL
+- Docker
 - Uvicorn
 - REST
 - JSON
@@ -21,7 +23,7 @@ a live monitoring dashboard.
 - Linux / Ubuntu
 - WSL2
 
-## To run the project:
+## To run the project:  
 
 ### 1. Clone the repository
 
@@ -50,18 +52,5 @@ The API will be available at: http://127.0.0.1:8000
 
 The documentation available at: http://127.0.0.1:8000/docs
 
-### 5. Start Node-RED (in another terminal)
-```bash
-node-red
-```
-The Node-RED editor will be available at: http://127.0.0.1:1880
 
-### 6. Import the Node-RED flow
-Import:
-```
-flows/robot-monitor.json
-```
-into Node-RED
-
-### 7. Open the dashboard
-http://127.0.0.1:1880/dashboard
+### 5. 
