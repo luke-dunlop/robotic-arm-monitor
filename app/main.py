@@ -1,56 +1,86 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+from datetime import datetime
 import random
+
+from app.database import get_db, engine, SessionLocal
+from app.models import Base, Robot, Telemetry
+from app.schemas import TelemetryResponse, TelemetryCreate, FaultCommand, FaultStatus
 
 app = FastAPI()
 
-temperature = 40.0
-current = 4.0
-vibration = 0.5
-speed = 50.0
-cycles = 0
+ROBOT_ID = 1
 
-fault_active = False
+@app.on_event("startup")
+def seed_robot():
+    Base.metadata.create_all(bind=engine)
+    db: Session = SessionLocal()
+    try:
+        robot = db.get(Robot, ROBOT_ID)
+        if robot is None:
+            db.add(Robot(id=ROBOT_ID, name="Robot Arm 1", status="normal"))
+            db.commit()
+    finally:
+        db.close()
 
 @app.get("/")
 def home():
     return {"message": "Robot monitoring system is running"}
 
-@app.post("/robot/fault")
-def change_fault(command: dict):
-    global fault_active
+@app.get("/robot/fault", response_model=FaultStatus)
+def get_fault(db: Session = Depends(get_db)):
+    robot = db.get(Robot, ROBOT_ID)
+    if robot is None:
+        raise HTTPException(status_code=404, detail="Robot not found")
+    return {"fault_active": robot.status == "fault"}
 
-    fault_active = command["active"]
+@app.post("/robot/fault", response_model=FaultStatus)
+def change_fault(command: FaultCommand, db: Session = Depends(get_db)):
+    robot = db.get(Robot, ROBOT_ID)
+    if robot is None:
+        raise HTTPException(status_code=404, detail="Robot not found")
 
-    return {
-	"fault_active": fault_active
-    }
+    robot.status = "fault" if command.active else "normal"
+    db.commit()
 
-@app.get("/robot/telemetry")
-def get_telemetry():
-    global temperature, current, vibration, speed, cycles
+    return {"fault_active": robot.status == "fault"}
 
-    if (fault_active == True):
-        temperature += random.uniform(-0.5, 1.5)
-        current += random.uniform(-0.2, 0.6)
-        vibration += random.uniform(-0.05, 0.15)
-        speed += random.uniform(-1, 2)
+@app.post("/robot/telemetry", response_model=TelemetryResponse)
+def create_telemetry(telemetry_data: TelemetryCreate, db: Session = Depends(get_db)):
+    telemetry = Telemetry(
+        robot_id=telemetry_data.robot_id,
+        timestamp=datetime.now(),
+        temperature=telemetry_data.temperature,
+        motor_current=telemetry_data.motor_current,
+        vibration=telemetry_data.vibration,
+        speed=telemetry_data.speed
+    )
 
-    else:
-        temperature += random.uniform(-0.5, 0.5)
-        current += random.uniform(-0.2, 0.2)
-        vibration += random.uniform(-0.05, 0.05)
-        speed += random.uniform(-1,1)
+    db.add(telemetry)
+    db.commit()
+    db.refresh(telemetry)
 
-    temperature = max(20, min(80, temperature))       # Keep temp between 20 and 80
-    current = max(0, min(10, current))
-    vibration = max(0, min(2, vibration))
-    speed = max(0, min(100, speed))
+    return telemetry
 
-    cycles += 1
-    return {
-        "temperature": round(temperature, 1),
-        "current": round(current, 2),
-        "vibration": round(vibration, 2),
-        "speed": round(speed, 1),
-        "cycles": cycles
-    }
+@app.get("/robot/telemetry", response_model=TelemetryResponse)
+def get_latest_telemetry(db: Session = Depends(get_db)):
+    latest = (db.query(Telemetry)
+              .filter(Telemetry.robot_id == ROBOT_ID)
+              .order_by(Telemetry.timestamp.desc())
+              .first()
+              )
+    if latest is None:
+        raise HTTPException(status_code=404, detail="No telemetry recorded yet")
+    return latest
+
+@app.get("/robot/telemetry/history", response_model=list[TelemetryResponse])
+def get_telemetry_history(db = Depends(get_db)):
+    readings = (
+	db.query(Telemetry)
+    .filter(Telemetry.robot_id == ROBOT_ID)
+	.order_by(Telemetry.timestamp.desc())
+	.limit(100)
+	.all()
+    )
+
+    return readings

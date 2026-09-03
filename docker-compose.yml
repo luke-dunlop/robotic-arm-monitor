@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: robot-postgres
+    environment:
+      POSTGRES_USER: robot_user
+      POSTGRES_PASSWORD: robot_password
+      POSTGRES_DB: robot_monitor
+    ports:
+      - "5432:5432"
+    volumes:
+    - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
