@@ -1,3 +1,7 @@
+import os
+os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+os.environ["API_KEY"] = "test-api-key"
+
 import pytest
 from sqlalchemy import create_engine, StaticPool
 from sqlalchemy.orm import sessionmaker

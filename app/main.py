@@ -6,6 +6,7 @@ import random
 from app.database import get_db, engine, SessionLocal
 from app.models import Base, Robot, Telemetry
 from app.schemas import TelemetryResponse, TelemetryCreate, FaultCommand, FaultStatus
+from app.security import verify_api_key
 
 app = FastAPI()
 
@@ -34,7 +35,7 @@ def get_fault(db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Robot not found")
     return {"fault_active": robot.status == "fault"}
 
-@app.post("/robot/fault", response_model=FaultStatus)
+@app.post("/robot/fault", response_model=FaultStatus, dependencies=[Depends(verify_api_key)])
 def change_fault(command: FaultCommand, db: Session = Depends(get_db)):
     robot = db.get(Robot, ROBOT_ID)
     if robot is None:
@@ -45,7 +46,7 @@ def change_fault(command: FaultCommand, db: Session = Depends(get_db)):
 
     return {"fault_active": robot.status == "fault"}
 
-@app.post("/robot/telemetry", response_model=TelemetryResponse)
+@app.post("/robot/telemetry", response_model=TelemetryResponse, dependencies=[Depends(verify_api_key)])
 def create_telemetry(telemetry_data: TelemetryCreate, db: Session = Depends(get_db)):
     telemetry = Telemetry(
         robot_id=telemetry_data.robot_id,

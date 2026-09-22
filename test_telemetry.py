@@ -1,3 +1,5 @@
+HEADERS = {"X-API-Key": "test-api-key"}
+
 def test_home_endpoint(client):
     response = client.get("/")
     assert response.status_code == 200
@@ -16,7 +18,7 @@ def test_post_and_get_telemetry(client):
         "speed": 55.0,
     }
 
-    post_response = client.post("/robot/telemetry", json=payload)
+    post_response = client.post("/robot/telemetry", json=payload, headers=HEADERS)
     assert post_response.status_code == 200
 
     body = post_response.json()
@@ -37,7 +39,8 @@ def test_telemetry_history_orders_newest_first(client):
             "motor_current": 1.0,
             "vibration": 0.1,
             "speed": 10.0
-            })
+            },
+            headers=HEADERS)
 
     response = client.get("/robot/telemetry/history")
     assert response.status_code == 200

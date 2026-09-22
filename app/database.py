@@ -1,9 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
+from app.config import settings
 
-DATABASE_URL = "postgresql+psycopg://robot_user:robot_password@localhost:5432/robot_monitor"
-
-engine = create_engine(DATABASE_URL)
+engine = create_engine(settings.database_url)
 
 SessionLocal = sessionmaker(
     autocommit=False,
