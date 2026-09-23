@@ -2,6 +2,8 @@ import random
 import requests
 import time
 
+from app.config import settings
+
 API_URL = "http://127.0.0.1:8000"
 
 temperature = 40.0
@@ -49,7 +51,7 @@ while True:
     }
 
     try:
-        response = session.post(f"{API_URL}/robot/telemetry", json=telemetry, timeout=2)
+        response = session.post(f"{API_URL}/robot/telemetry", json=telemetry, headers={"x-api-key": settings.api_key}, timeout=2)
         response.raise_for_status()
         print(response.json())
     except requests.RequestException as e:
