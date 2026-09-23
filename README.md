@@ -52,9 +52,10 @@ Copy the example file and fill in real values:
 cp .env.example .env
 ```
 `.env` needs:
-DATABASE_URL:postgresql+psycopg://robot_user:robot_password@localhost:5432/robot_monitor
+```
+DATABASE_URL=postgresql+psycopg://robot_user:robot_password@localhost:5432/robot_monitor
 API_KEY= choose your own
-
+```
 ### 5. Start Postgres
 ```bash
 docker compose up -d postgres
